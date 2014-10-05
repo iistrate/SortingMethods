@@ -26,16 +26,21 @@ void print(int *array, int length) {
 }
 
 void insertion(int *array, int length) {
-	int cursor;
+	//holds each element
+	int temp;
 	int j;
-	//insertion
 	for (int i = 0; i < length; i++) {
-		j = i;
-		while (j > 0 && array[j - 1] > array[j]) {
-			cursor = array[j - 1];
-			array[j - 1] = array[j];
-			array[j] = cursor;
-			j = j - 1;
+		//look at the next spot in the array
+		j = i + 1;
+		//while we're not done comparing temp to every single item in the list starting from the +1 item
+		while (j < length) {
+			//compare elements 
+			if (array[j] < array[i]) {
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+			}
+			j++;
 		}
 	}
 }
