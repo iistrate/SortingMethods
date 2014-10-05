@@ -6,18 +6,19 @@ using std::endl;
 void print(int *array, const int length);
 int insertion(int *array, const int length);
 int selection(int *array, const int length);
+int bubble(int *array, const int length);
 
 int main() {
-	int array[10] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78 };
-
+	const int m_length = 15;
+	int array[m_length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1 };
 	//begin
 	cout << "Array before: " << endl;
-	print(array, 10);
+	print(array, m_length);
 	
-	cout << "\n" << insertion(array, 10) << " nr of swaps \n" << endl;
+	cout << "\n" << bubble(array, m_length) << " nr of swaps \n" << endl;
 
 	cout << "Array after: " << endl;
-	print(array, 10);
+	print(array, m_length);
 
 	system("pause");
 
@@ -55,7 +56,7 @@ int selection(int *array, int length) {
 	}
 	return swaps;
 }
-//nr of swaps
+//21 nr of swaps
 int insertion(int *array, const int length) {
 	int swaps = 0;
 	int j;
@@ -71,6 +72,30 @@ int insertion(int *array, const int length) {
 			array[j] = temp;
 			swaps++;
 			j--;
+		}
+	}
+	return swaps;
+}
+//21 nr of swaps
+int bubble(int *array, const int length) {
+	int swaps = 0;
+	int temp;
+	bool swapped = true;
+	//while we swapped
+	while (swapped) {
+		swapped = false;
+		for (int i = 0; i < length; i++) {
+			//make sure we don't exceed array length
+			if (i + 1 < length) {
+				//if larger then swap
+				if (array[i] > array[i + 1]) {
+					temp = array[i];
+					array[i] = array[i + 1];
+					array[i + 1] = temp;
+					swaps++;
+					swapped = true;
+				}
+			}
 		}
 	}
 	return swaps;
