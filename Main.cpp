@@ -7,6 +7,7 @@ void print(int *array, const int length);
 int insertion(int *array, const int length);
 int selection(int *array, const int length);
 int bubble(int *array, const int length);
+int shell(int *array, const int length);
 
 int main() {
 	const int m_length = 15;
@@ -15,7 +16,7 @@ int main() {
 	cout << "Array before: " << endl;
 	print(array, m_length);
 	
-	cout << "\n" << bubble(array, m_length) << " nr of swaps \n" << endl;
+	cout << "\n" << shell(array, m_length) << " nr of swaps \n" << endl;
 
 	cout << "Array after: " << endl;
 	print(array, m_length);
@@ -95,6 +96,26 @@ int bubble(int *array, const int length) {
 					swaps++;
 					swapped = true;
 				}
+			}
+		}
+	}
+	return swaps;
+}
+//21 nr of swaps
+int shell(int *array, const int length) {
+	int swaps = 0;
+	int temp;
+	//initially divide our length by 2; then each iteration half the gap
+	for (int gap = length / 2; gap != 0; gap /= 2) {
+		//right side of array ++ < length
+		for (int i = gap; i < length; i++) {
+			//left side of array ++ < beginning of right side
+			for (int j = i - gap; j >= 0 && j < i && array[j] > array[j+gap]; j -= gap) {
+				temp = array[j];
+				array[j] = array[j+gap];
+				array[j+gap] = temp;
+				swaps++;
+				cout << " j: " << j << " i: " << i << endl;
 			}
 		}
 	}
