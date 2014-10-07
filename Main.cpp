@@ -1,31 +1,52 @@
+//gen libraries
 #include <iostream>
+//user libraries
+#include "Heap.h"
 
-using std::cout;
-using std::endl;
-
+//prints array
 void print(int *array, const int length);
+
+//sort by insertion sort; returns nr of swaps
 int insertion(int *array, const int length);
+//sort by selection sort; returns nr of swaps
 int selection(int *array, const int length);
+//sort by bubble sort; returns nr of swaps
 int bubble(int *array, const int length);
+//sort by shell sort; returns nr of swaps
 int shell(int *array, const int length);
 
-int main() {
-	const int m_length = 15;
-	int array[m_length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1 };
+//our heap
+Heap Heapster;
+
+int main(void) {
+	//our working array
+	const int length = 15;
+	int array[length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1 };
+
+	//build heap
+	Heap Heapster;
+	Heapster.heapify(array, length);
+
 	//begin
 	cout << "Array before: " << endl;
-	print(array, m_length);
+	print(array, length);
 	
-	cout << "\n" << shell(array, m_length) << " nr of swaps \n" << endl;
+
+	cout << "\nHeap sort ";
+	Heapster.print(Heapster.getRoot());
+	cout << endl;
+
+	cout << "\nThere were " << shell(array, length) << " nr of swaps before sorting completed. \n" << endl;
 
 	cout << "Array after: " << endl;
-	print(array, m_length);
+	print(array, length);
 
 	system("pause");
 
 	return 0;
 }
 
+//print content of array
 void print(int *array, int length) {
 	for (int i = 0; i < length; i++) {
 		cout << array[i] << " ";
@@ -33,8 +54,7 @@ void print(int *array, int length) {
 	cout << endl;
 }
 
-
-//21 nr of swaps
+//44 nr of swaps
 int selection(int *array, int length) {
 	//holds each element
 	int swaps = 0;
@@ -57,7 +77,7 @@ int selection(int *array, int length) {
 	}
 	return swaps;
 }
-//21 nr of swaps
+//44 nr of swaps
 int insertion(int *array, const int length) {
 	int swaps = 0;
 	int j;
@@ -77,7 +97,7 @@ int insertion(int *array, const int length) {
 	}
 	return swaps;
 }
-//21 nr of swaps
+//44 nr of swaps
 int bubble(int *array, const int length) {
 	int swaps = 0;
 	int temp;
@@ -101,7 +121,7 @@ int bubble(int *array, const int length) {
 	}
 	return swaps;
 }
-//21 nr of swaps
+//18 nr of swaps
 int shell(int *array, const int length) {
 	int swaps = 0;
 	int temp;
@@ -115,7 +135,6 @@ int shell(int *array, const int length) {
 				array[j] = array[j+gap];
 				array[j+gap] = temp;
 				swaps++;
-				cout << " j: " << j << " i: " << i << endl;
 			}
 		}
 	}
