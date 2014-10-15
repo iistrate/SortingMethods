@@ -1,27 +1,37 @@
 //gen libraries
 #include <iostream>
+#include <vector>
 //user libraries
 #include "Heap.h"
+
+using std::vector;
 
 //prints array
 void print(int *array, const int length);
 
 //sort by insertion sort; returns nr of swaps
 int insertion(int *array, const int length);
+
 //sort by selection sort; returns nr of swaps
 int selection(int *array, const int length);
+
 //sort by bubble sort; returns nr of swaps
 int bubble(int *array, const int length);
+
 //sort by shell sort; returns nr of swaps
 int shell(int *array, const int length);
+
+//sort by merge sort; returns nr of swaps
+int merge(int *array, const int length);
+void split(vector < int >&);
 
 //our heap
 Heap Heapster;
 
 int main(void) {
 	//our working array
-	const int length = 15;
-	int array[length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1 };
+	const int length = 16;
+	int array[length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1, 2};
 
 	//build heap
 	Heap Heapster;
@@ -32,11 +42,11 @@ int main(void) {
 	print(array, length);
 	
 
-	cout << "\nHeap sort ";
-	Heapster.print(Heapster.getRoot());
-	cout << endl;
+	//cout << "\nHeap sort ";
+	//Heapster.print(Heapster.getRoot());
+	//cout << endl;
 
-	cout << "\nThere were " << shell(array, length) << " nr of swaps before sorting completed. \n" << endl;
+	cout << "\nThere were " << merge(array, length) << " nr of swaps before sorting completed. \n" << endl;
 
 	cout << "Array after: " << endl;
 	print(array, length);
@@ -139,4 +149,63 @@ int shell(int *array, const int length) {
 		}
 	}
 	return swaps;
+}
+//00 nr of swaps
+int merge(int *array, const int length) {
+	int swaps = 0;
+	//to vectors
+	vector < int > varr;
+	for (int i = 0; i < length; i++) {
+		varr.push_back(array[i]);
+	}
+	//while there's ints to break apart do so
+	split(varr);
+	//back to array
+	for (int i = 0; i < length; i++) {
+		array[i] = varr[i];
+	}
+	return swaps;
+}
+void split(vector < int > &orig) {
+	vector < int > left;
+	vector < int > right;
+	//while our vector is greater than one; otherwise it is considered to be sorted
+	if (orig.size() > 1) {
+		//get length of original vector
+		int length = orig.size();
+		//get middle of original vector
+		int mid = orig.size() / 2;
+		//split vector into left and right 
+		left.assign(orig.begin(), orig.end() - mid);
+		right.assign(orig.end() - mid, orig.end());
+		//keep breaking stuff up while we're being called
+		split(left);
+		split(right);
+		
+		int i = 0, j = 0, k = 0;
+		while (left.size() != j && right.size() != k) {
+			if (left[j] < right[k]) {
+				orig[i] = left[j];
+				i++;
+				j++;
+			}
+			else {
+				orig[i] = right[k];
+				i++;
+				k++;
+			}
+		}
+		while (left.size() != j)
+		{
+			orig[i] = left[j];
+			i++;
+			j++;
+		}
+		while (right.size() != k)
+		{
+			orig[i] = right[k];
+			i++;
+			k++;
+		}
+	}
 }
