@@ -7,10 +7,12 @@
 
 //gen libraries
 #include <iostream>
+#include <vector>
 
 //namespaces
 using std::cout;
 using std::endl;
+using std::vector;
 
 class Heap {
 private:
@@ -51,7 +53,7 @@ public:
 	Heap(int i): m_Root(new Node(i)), m_count(1) {}
 
 	//Heap.cpp
-	void heapify(int array[], const int length);
+	void heapify(vector < int > varray);
 	void insertNode(int data);
 	void insertNode(int data, Node* NewNode);
 	void print(Node* node);

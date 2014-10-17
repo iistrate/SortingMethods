@@ -1,55 +1,61 @@
 //gen libraries
 #include <iostream>
 #include <vector>
+#include <random>
+
 //user libraries
 #include "Heap.h"
 
 using std::vector;
 
 //prints array
-void print(int *array, const int length);
+void print(vector < int >);
 
 //sort by insertion sort; returns nr of swaps
-int insertion(int *array, const int length);
+int insertion(vector < int >&);
 
 //sort by selection sort; returns nr of swaps
-int selection(int *array, const int length);
+int selection(vector < int >&);
 
 //sort by bubble sort; returns nr of swaps
-int bubble(int *array, const int length);
+int bubble(vector < int >&);
 
 //sort by shell sort; returns nr of swaps
-int shell(int *array, const int length);
+int shell(vector < int >&);
 
 //sort by merge sort; returns nr of swaps
-int merge(int *array, const int length);
+int merge(vector < int >&);
 void split(vector < int >&);
+
+//sort by quicksort
+int quickSort(vector < int >&, int, int);
 
 //our heap
 Heap Heapster;
 
 int main(void) {
+	//rand seed for quicksort
+	std::random_device rd;
+
 	//our working array
-	const int length = 16;
-	int array[length] = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1, 2};
+	vector < int > varray = { 99, 22, 3, 8, 5, 4, 7, 11, 9, 78, 25, 909, 76, 55, 1, 2};
 
 	//build heap
 	Heap Heapster;
-	Heapster.heapify(array, length);
+	Heapster.heapify(varray);
 
 	//begin
 	cout << "Array before: " << endl;
-	print(array, length);
+	print(varray);
 	
 
 	//cout << "\nHeap sort ";
 	//Heapster.print(Heapster.getRoot());
 	//cout << endl;
 
-	cout << "\nThere were " << merge(array, length) << " nr of swaps before sorting completed. \n" << endl;
-
+	cout << "\nThere were " <<  quickSort(varray, 0, varray.size() - 1) << " nr of swaps before sorting completed. \n" << endl;
 	cout << "Array after: " << endl;
-	print(array, length);
+	print(varray);
 
 	system("pause");
 
@@ -57,29 +63,29 @@ int main(void) {
 }
 
 //print content of array
-void print(int *array, int length) {
-	for (int i = 0; i < length; i++) {
-		cout << array[i] << " ";
+void print(vector < int > varray) {
+	for (int i = 0; i < varray.size(); i++) {
+		cout << varray[i] << " ";
 	}
 	cout << endl;
 }
 
 //44 nr of swaps
-int selection(int *array, int length) {
+int selection(vector < int >& varray) {
 	//holds each element
 	int swaps = 0;
 	int temp;
 	int j;
-	for (int i = 0; i < length; i++) {
+	for (int i = 0; i < varray.size(); i++) {
 		//look at the next spot in the array
 		j = i + 1;
 		//while we're not done comparing temp to every single item in the list starting from the +1 item
-		while (j < length) {
+		while (j < varray.size()) {
 			//compare elements 
-			if (array[j] < array[i]) {
-				temp = array[i];
-				array[i] = array[j];
-				array[j] = temp;
+			if (varray[j] < varray[i]) {
+				temp = varray[i];
+				varray[i] = varray[j];
+				varray[j] = temp;
 				swaps++;
 			}
 			j++;
@@ -88,19 +94,19 @@ int selection(int *array, int length) {
 	return swaps;
 }
 //44 nr of swaps
-int insertion(int *array, const int length) {
+int insertion(vector < int >& varray) {
 	int swaps = 0;
 	int j;
 	int temp;
 
-	for (int i = 1; i < length; i++) {
+	for (int i = 1; i < varray.size(); i++) {
 		//start at the 2nd element for comparison reasons
 		j = i;
-		while (j > 0 && array[j - 1] > array[j]) {
+		while (j > 0 && varray[j - 1] > varray[j]) {
 			//if the current element is smaller than the previous swap positions
-			temp = array[j - 1];
-			array[j - 1] = array[j];
-			array[j] = temp;
+			temp = varray[j - 1];
+			varray[j - 1] = varray[j];
+			varray[j] = temp;
 			swaps++;
 			j--;
 		}
@@ -108,21 +114,21 @@ int insertion(int *array, const int length) {
 	return swaps;
 }
 //44 nr of swaps
-int bubble(int *array, const int length) {
+int bubble(vector < int >& varray) {
 	int swaps = 0;
 	int temp;
 	bool swapped = true;
 	//while we swapped
 	while (swapped) {
 		swapped = false;
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < varray.size(); i++) {
 			//make sure we don't exceed array length
-			if (i + 1 < length) {
+			if (i + 1 < varray.size()) {
 				//if larger then swap
-				if (array[i] > array[i + 1]) {
-					temp = array[i];
-					array[i] = array[i + 1];
-					array[i + 1] = temp;
+				if (varray[i] > varray[i + 1]) {
+					temp = varray[i];
+					varray[i] = varray[i + 1];
+					varray[i + 1] = temp;
 					swaps++;
 					swapped = true;
 				}
@@ -132,18 +138,18 @@ int bubble(int *array, const int length) {
 	return swaps;
 }
 //18 nr of swaps
-int shell(int *array, const int length) {
+int shell(vector < int >& varray) {
 	int swaps = 0;
 	int temp;
 	//initially divide our length by 2; then each iteration half the gap
-	for (int gap = length / 2; gap != 0; gap /= 2) {
+	for (int gap = varray.size() / 2; gap != 0; gap /= 2) {
 		//right side of array ++ < length
-		for (int i = gap; i < length; i++) {
+		for (int i = gap; i < varray.size(); i++) {
 			//left side of array ++ < beginning of right side
-			for (int j = i - gap; j >= 0 && j < i && array[j] > array[j+gap]; j -= gap) {
-				temp = array[j];
-				array[j] = array[j+gap];
-				array[j+gap] = temp;
+			for (int j = i - gap; j >= 0 && j < i && varray[j] > varray[j+gap]; j -= gap) {
+				temp = varray[j];
+				varray[j] = varray[j+gap];
+				varray[j+gap] = temp;
 				swaps++;
 			}
 		}
@@ -151,19 +157,10 @@ int shell(int *array, const int length) {
 	return swaps;
 }
 //00 nr of swaps
-int merge(int *array, const int length) {
+int merge(vector < int >& varray) {
 	int swaps = 0;
-	//to vectors
-	vector < int > varr;
-	for (int i = 0; i < length; i++) {
-		varr.push_back(array[i]);
-	}
 	//while there's ints to break apart do so
-	split(varr);
-	//back to array
-	for (int i = 0; i < length; i++) {
-		array[i] = varr[i];
-	}
+	split(varray);
 	return swaps;
 }
 void split(vector < int > &orig) {
@@ -208,4 +205,49 @@ void split(vector < int > &orig) {
 			k++;
 		}
 	}
+}
+int quickSort(vector < int >& varray, int left, int right) {
+	//random
+	std::default_random_engine generator;
+	//keep tabs on nr of swaps
+	int static swaps = 0;
+	//temp values & sorted index
+	int temp = 0, sortedIndex = left;
+	//left always is 0ish, right tends to go to 0 because of partioning, 
+	//when that happens we know we're done partitioning and so we know everything is sorted
+	if (right > left) {
+		cout << left << " " << right << endl;
+		//get random pivot
+		std::uniform_int_distribution<int> distribution(left, right);
+		int randInt = distribution(generator);;
+		cout << "pivot index: " << randInt << endl;
+		//make the random number the pivot; and add it to the end of the array
+		temp = varray[right];
+		varray[right] = varray[randInt];
+		varray[randInt] = temp;
+
+		//loop through array
+		for (int i = left; i < right; i++) {
+			//nr less than pivot
+			if (varray[i] < varray[right]) {
+				//swap with sorted index
+				temp = varray[sortedIndex];
+				varray[sortedIndex] = varray[i];
+				varray[i] = temp;
+				sortedIndex++;
+				swaps++;
+			}
+			if (varray[right] < varray[i] && i + 1 == right) {
+				//swap pivot with end of sorted sub array
+				temp = varray[sortedIndex];
+				varray[sortedIndex] = varray[right];
+				varray[right] = temp;
+				swaps++;
+			}
+			print(varray);
+		}
+		quickSort(varray, left, sortedIndex - 1);
+		quickSort(varray, sortedIndex + 1, right);
+	}
+	return swaps;
 }

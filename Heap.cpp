@@ -37,9 +37,9 @@ void Heap::insertNode(int data, Node* NewNode) {
 	}
 }
 
-void Heap::heapify(int array[], const int length) {
-	for (int i = 0; i < length; i++) {
-		insertNode(array[i]);
+void Heap::heapify(vector < int > varray) {
+	for (int i = 0; i < varray.size(); i++) {
+		insertNode(varray[i]);
 	}
 }
 void Heap::print(Node* node) {
