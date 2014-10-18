@@ -30,11 +30,15 @@ void split(vector < int >&);
 //sort by quicksort
 int quickSort(vector < int >&, int, int);
 
+//sort by bucketsort
+int bucketSort(vector < int >&);
+int getHighest(vector < int >);
+
 //our heap
 Heap Heapster;
 
 int main(void) {
-	//rand seed for quicksort
+	//rand seed for quicksort c++11
 	std::random_device rd;
 
 	//our working array
@@ -53,7 +57,7 @@ int main(void) {
 	//Heapster.print(Heapster.getRoot());
 	//cout << endl;
 
-	cout << "\nThere were " <<  quickSort(varray, 0, varray.size() - 1) << " nr of swaps before sorting completed. \n" << endl;
+	cout << "\nThere were " <<  bucketSort(varray) << " nr of swaps before sorting completed. \n" << endl;
 	cout << "Array after: " << endl;
 	print(varray);
 
@@ -70,7 +74,6 @@ void print(vector < int > varray) {
 	cout << endl;
 }
 
-//44 nr of swaps
 int selection(vector < int >& varray) {
 	//holds each element
 	int swaps = 0;
@@ -93,7 +96,6 @@ int selection(vector < int >& varray) {
 	}
 	return swaps;
 }
-//44 nr of swaps
 int insertion(vector < int >& varray) {
 	int swaps = 0;
 	int j;
@@ -113,7 +115,6 @@ int insertion(vector < int >& varray) {
 	}
 	return swaps;
 }
-//44 nr of swaps
 int bubble(vector < int >& varray) {
 	int swaps = 0;
 	int temp;
@@ -156,7 +157,6 @@ int shell(vector < int >& varray) {
 	}
 	return swaps;
 }
-//00 nr of swaps
 int merge(vector < int >& varray) {
 	int swaps = 0;
 	//while there's ints to break apart do so
@@ -207,7 +207,7 @@ void split(vector < int > &orig) {
 	}
 }
 int quickSort(vector < int >& varray, int left, int right) {
-	//random
+	//random seed
 	std::default_random_engine generator;
 	//keep tabs on nr of swaps
 	int static swaps = 0;
@@ -216,19 +216,22 @@ int quickSort(vector < int >& varray, int left, int right) {
 	//left always is 0ish, right tends to go to 0 because of partioning, 
 	//when that happens we know we're done partitioning and so we know everything is sorted
 	if (right > left) {
-		cout << left << " " << right << endl;
-		//get random pivot
+		//get random pivot in range [left, right] c++11
 		std::uniform_int_distribution<int> distribution(left, right);
-		int randInt = distribution(generator);;
-		cout << "pivot index: " << randInt << endl;
+		int randInt = distribution(generator);
+//test
+//		cout << left << " " << right << endl;
+//		cout << "pivot index: " << randInt << endl;
+//end test
 		//make the random number the pivot; and add it to the end of the array
+		//avoiding O(n^2)
 		temp = varray[right];
 		varray[right] = varray[randInt];
 		varray[randInt] = temp;
 
 		//loop through array
 		for (int i = left; i < right; i++) {
-			//nr less than pivot
+			//if nr less than pivot add to the end of sorted sub array
 			if (varray[i] < varray[right]) {
 				//swap with sorted index
 				temp = varray[sortedIndex];
@@ -237,17 +240,83 @@ int quickSort(vector < int >& varray, int left, int right) {
 				sortedIndex++;
 				swaps++;
 			}
+			//if no number is less than pivot; pivot is the smallest so add to end of sorted subarray
 			if (varray[right] < varray[i] && i + 1 == right) {
 				//swap pivot with end of sorted sub array
 				temp = varray[sortedIndex];
 				varray[sortedIndex] = varray[right];
 				varray[right] = temp;
 				swaps++;
+				//at this point everything smaller than the pivot is on the left side of the array
+				//everything bigger on the right side
 			}
-			print(varray);
+//test
+//			print(varray);
+//end test
 		}
+		//break into left of pivot array
 		quickSort(varray, left, sortedIndex - 1);
+		//break into right of pivot array
 		quickSort(varray, sortedIndex + 1, right);
 	}
 	return swaps;
+}
+int bucketSort(vector < int >& varray) {
+	static int swaps = 0;
+	static int highestValue = 0;
+	///our bucket vector, and bucket range
+	static int lowRange = 0;
+	static int highRange = 10;
+	vector < int > bucket;
+	static vector < int > sorted;
+
+	//before we do anything get highest range
+	if (swaps == 0) {
+		highestValue = getHighest(varray);
+	}
+
+	vector < int >::const_iterator it;
+	it = varray.begin();
+	//clear previous bucket
+	bucket.clear();
+	//break into buckets
+//	cout << lowRange << " " << highestValue << " " << highRange << endl;
+	while (it != varray.end()) {
+		//if in bucket range
+		if (*it > lowRange && *it < highRange) {
+			bucket.push_back(*it);
+//			cout << *it << " ";
+		}
+		it++;
+	}
+	//sort values in bucket using any sort
+	swaps += shell(bucket);
+	//add the bucket back to the vector
+	for (int i = 0; i < bucket.size(); i++) {
+		sorted.push_back(bucket[i]);
+	}
+	//while highRange is < HighestValue
+	if (highestValue > highRange) {
+		//increase range
+		lowRange += 10;
+		highRange += 10;
+		bucketSort(varray);
+	}
+	//aaaand we're done :)
+	else {
+		varray = sorted;
+	}
+	return swaps;
+}
+int getHighest(vector < int > varray) {
+	vector < int > ::const_iterator it;
+	it = varray.begin();
+	int largest = varray.front();
+	while (it != varray.end()) {
+		if (largest < *it) {
+			largest = *it;
+		}
+		it++;
+	}
+	return largest;
 }
