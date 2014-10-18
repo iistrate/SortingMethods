@@ -15,15 +15,20 @@ using std::endl;
 using std::vector;
 
 class Heap {
-private:
+protected:
 	class Node {
 	private:
 		Node* m_Right;
 		Node* m_Left;
 		int m_data;
+		int m_value;
 	public:
-		Node(void): m_data(0), m_Right(0), m_Left(0) {}
-		Node(int i) : m_data(i), m_Right(0), m_Left(0) {}
+		//empty node
+		Node(void) : m_data(0), m_Right(0), m_Left(0), m_value(0) {}
+		//node with data
+		Node(int i) : m_data(i), m_Right(0), m_Left(0), m_value(0) {}
+		//node with data and priority
+		Node(int i, int ii) : m_data(i), m_Right(0), m_Left(0), m_value(ii) {}
 
 		void setRight(Node* node) {
 			m_Right = node;
@@ -34,6 +39,9 @@ private:
 		void setData(int i) {
 			m_data = i;
 		}
+		void setValue(int i) {
+			m_value = i;
+		}
 		Node* getRight(void) {
 			return m_Right;
 		}
@@ -42,6 +50,9 @@ private:
 		}
 		int getData(void) {
 			return m_data;
+		}
+		int getValue() {
+			return m_value;
 		}
 	};
 
@@ -54,6 +65,7 @@ public:
 
 	//Heap.cpp
 	void heapify(vector < int > varray);
+	void insertPriorityNode(int data, int priority);
 	void insertNode(int data);
 	void insertNode(int data, Node* NewNode);
 	void print(Node* node);

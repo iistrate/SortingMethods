@@ -2,8 +2,7 @@
 #define GLOBALS_H
 
 namespace Globals {
-	const int QUIT = 9;
-	enum Sorts {
+	enum Commands {
 		INSERTION_SORT = 1,
 		SELECTION_SORT,
 		BUBBLE_SORT,
@@ -11,7 +10,12 @@ namespace Globals {
 		HEAP_SORT,
 		MERGE_SORT,
 		QUICK_SORT,
-		BUCKET_SORT
+		BUCKET_SORT,
+		QUIT,
+		PQ_INSERT,
+		PQ_PULL,
+		PQ_PEEK,
+		PQ_PRINT
 	};
 }
 

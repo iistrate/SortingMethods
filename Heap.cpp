@@ -1,5 +1,19 @@
 #include "Heap.h"
 
+
+void Heap::insertPriorityNode(int priority, int data) {
+	//if empty assign to node
+	if (m_count == 0) {
+		m_Root = new Node(priority);
+		m_Root->setValue(data);
+		m_count++;
+	}
+	//if more than one node
+	else {
+		insertNode(priority, m_Root);
+	}
+}
+
 void Heap::insertNode(int data) {
 	//if empty assign to node
 	if (m_count == 0) {
